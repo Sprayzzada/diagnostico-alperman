@@ -43,7 +43,7 @@
   button { cursor: pointer; touch-action: manipulation; border: 0; background: none; }
   a { touch-action: manipulation; }
   :focus-visible { outline: 3px solid var(--preto); outline-offset: 3px; }
-  [tabindex="-1"]:focus { outline: none; }
+  h1[tabindex="-1"]:focus { outline: none; }
 
   .wrap { width: 100%; max-width: 560px; margin: 0 auto; padding: 0 16px; }
 
@@ -139,7 +139,20 @@
   }
   .opcao[aria-checked="true"] { background: var(--preto); color: var(--branco); }
   .opcao[aria-checked="true"]::after { background: var(--branco); box-shadow: inset 0 0 0 4px var(--preto); }
+  .opcao[role="checkbox"]::after { border-radius: 6px; }
+  .opcao[role="checkbox"][aria-checked="true"]::after {
+    background: var(--branco) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23111111' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
+    box-shadow: none; border-color: var(--branco);
+  }
   @media (hover: hover) { .opcao:hover { border-color: var(--preto); } .nota:hover { border-color: var(--preto); } }
+
+  /* Botão Continuar sempre visível acima do rodapé */
+  .acao-fixa { position: sticky; bottom: calc(var(--rodape) + 10px); margin-top: 16px; z-index: 5; }
+  .acao-fixa::before {
+    content: ""; position: absolute; left: -16px; right: -16px; top: -14px; bottom: -10px; z-index: -1;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--branco) 35%);
+  }
+  .btn[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; }
 
   .escala { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 26px; }
   .nota {
@@ -216,7 +229,16 @@
   .seta { display: flex; justify-content: center; padding: 4px 0; }
   .seta svg { width: 22px; height: 22px; }
 
-  .case { background: var(--cinza); border-radius: var(--raio); padding: 18px 16px 16px; }
+  .abas-dica { font-size: 14px; margin: -4px 0 10px; }
+  .abas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .aba {
+    min-height: 42px; padding: 8px 14px; border-radius: 999px;
+    border: 1.5px solid var(--preto); background: var(--branco);
+    font-weight: 600; font-size: 14px; line-height: 1.25; text-align: left;
+  }
+  .aba[aria-selected="true"] { background: var(--preto); color: var(--branco); }
+
+  .case { margin-top: 24px; background: var(--cinza); border-radius: var(--raio); padding: 18px 16px 16px; }
   .case-rotulo { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .case-nome { margin-top: 6px; font-size: 20px; font-weight: 800; }
   .case-categoria { margin-top: 2px; font-size: 15px; }
@@ -349,7 +371,7 @@
   ];
 
   var PERGUNTAS = [
-    { tipo: 'escolha', titulo: 'Qual tema mais pesa hoje na sua empresa?', opcoes: TRILHAS.map(function (t) { return t.tema; }) },
+    { tipo: 'multipla', titulo: 'Quais temas mais pesam hoje na sua empresa?', instrucao: 'Marque um ou mais.', opcoes: TRILHAS.map(function (t) { return t.tema; }) },
     { tipo: 'escala', pilar: 0, titulo: 'Os objetivos da empresa estão claros para todos os times.' },
     { tipo: 'escala', pilar: 0, titulo: 'As áreas trabalham com as mesmas prioridades.' },
     { tipo: 'escala', pilar: 1, titulo: 'As metas da equipe são acompanhadas com indicadores.' },
@@ -363,7 +385,8 @@
   var TELA_RESULTADO = TOTAL + 1;    /* 10 */
 
   /* ===== Estado: só na memória da página (nada é gravado) ===== */
-  var estado = { nome: '', respostas: novasRespostas(), tela: 0 };
+  /* respostas[0] = lista dos temas marcados (índices de TRILHAS); aba = tema aberto no resultado */
+  var estado = { nome: '', respostas: novasRespostas(), tela: 0, aba: 0 };
   var travado = false;
 
   function novasRespostas() { var r = []; for (var i = 0; i < TOTAL; i++) r.push(null); return r; }
@@ -388,6 +411,15 @@
   function linkExterno(href, texto) {
     return '<a class="link-externo" href="' + href + '" target="_blank" rel="noopener noreferrer">' +
       esc(texto) + ICONE_EXTERNO + '<span class="sr"> (abre em nova aba)</span></a>';
+  }
+
+  function listaNatural(itens) {
+    return itens.length < 2 ? itens.join('') : itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1];
+  }
+
+  /* Temas marcados na pergunta 1, na ordem da lista */
+  function trilhasMarcadas() {
+    return estado.respostas[0].slice().sort(function (a, b) { return a - b; }).map(function (k) { return TRILHAS[k]; });
   }
 
   function nomeFormatado() {
@@ -469,12 +501,20 @@
         html += '<button class="nota" type="button" role="radio" data-valor="' + v + '" aria-checked="' + (resp === v) + '" aria-label="' + rotulo + '">' + v + '</button>';
       }
       html += '</div><div class="escala-legenda" aria-hidden="true"><span>1 = não acontece</span><span>5 = acontece sempre</span></div>';
+    } else if (p.tipo === 'multipla') {
+      var marcados = resp || [];
+      html += '<h1 class="pergunta" id="q-titulo" data-foco tabindex="-1">' + esc(p.titulo) + '</h1>' +
+        '<p class="instrucao" id="q-instrucao">' + esc(p.instrucao) + '</p>' +
+        '<div class="opcoes" role="group" aria-labelledby="q-titulo" aria-describedby="q-instrucao">';
+      p.opcoes.forEach(function (op, k) {
+        html += '<button class="opcao" type="button" role="checkbox" data-valor="' + k + '" aria-checked="' + (marcados.indexOf(k) >= 0) + '">' + esc(op) + '</button>';
+      });
+      html += '</div><div class="acao-fixa"><button class="btn btn-vermelho" id="continuar" type="button"' + (marcados.length ? '' : ' disabled') + '>Continuar</button></div>';
     } else {
       html += '<h1 class="pergunta" id="q-titulo" data-foco tabindex="-1">' + esc(p.titulo) + '</h1>' +
         '<div class="opcoes" role="radiogroup" aria-labelledby="q-titulo">';
-      p.opcoes.forEach(function (op, k) {
-        var valor = i === 0 ? k : op;
-        html += '<button class="opcao" type="button" role="radio" data-valor="' + esc(String(valor)) + '" aria-checked="' + (resp === valor) + '">' + esc(op) + '</button>';
+      p.opcoes.forEach(function (op) {
+        html += '<button class="opcao" type="button" role="radio" data-valor="' + esc(op) + '" aria-checked="' + (resp === op) + '">' + esc(op) + '</button>';
       });
       html += '</div>';
     }
@@ -496,8 +536,35 @@
     return lista;
   }
 
+  /* Os 3 passos + o case de um tema */
+  function caminhoHTML(trilha) {
+    var passos = trilha.passos.map(function (p, k) {
+      var item = '<li class="passo' + (k === 0 ? ' primeiro' : '') + '">' +
+        '<span class="passo-num" aria-hidden="true">' + (k + 1) + '</span>' +
+        '<div class="passo-corpo">' +
+          '<p class="passo-rotulo"><span class="sr">Passo ' + (k + 1) + ': </span>' + esc(p.tipo) + '</p>' +
+          '<h3 class="passo-nome">' + esc(p.nome) + '</h3>' +
+          (p.detalhe ? '<p class="passo-detalhe">' + esc(p.detalhe) + '</p>' : '') +
+          (p.preco ? '<p class="passo-preco">' + esc(p.preco).split('R$ ').join('R$ ') + '</p>' : '') +
+          (p.link ? linkExterno(p.link, 'Ver no site da Alperman') : '') +
+        '</div></li>';
+      if (k < trilha.passos.length - 1) item += '<li class="seta" aria-hidden="true">' + SETA_BAIXO + '</li>';
+      return item;
+    }).join('');
+    return '<ol class="caminho">' + passos + '</ol>' +
+      '<article class="case">' +
+        '<h3 class="case-rotulo">Case parecido com o seu</h3>' +
+        '<p class="case-nome">' + esc(trilha.caso.nome) + '</p>' +
+        '<p class="case-categoria">' + esc(trilha.caso.categoria) + '</p>' +
+        linkExterno(CASES, 'Ler o case') +
+      '</article>';
+  }
+
   function telaResultado() {
-    var trilha = TRILHAS[estado.respostas[0]];
+    var trilhas = trilhasMarcadas();
+    if (estado.aba >= trilhas.length) estado.aba = 0;
+    var temas = listaNatural(trilhas.map(function (t) { return t.tema; }));
+    var varios = trilhas.length > 1;
     var quando = estado.respostas[7];
     var quem = estado.respostas[8];
     var nome = nomeFormatado();
@@ -514,19 +581,15 @@
       '</article>';
     }).join('');
 
-    var passos = trilha.passos.map(function (p, k) {
-      var item = '<li class="passo' + (k === 0 ? ' primeiro' : '') + '">' +
-        '<span class="passo-num" aria-hidden="true">' + (k + 1) + '</span>' +
-        '<div class="passo-corpo">' +
-          '<p class="passo-rotulo"><span class="sr">Passo ' + (k + 1) + ': </span>' + esc(p.tipo) + '</p>' +
-          '<h3 class="passo-nome">' + esc(p.nome) + '</h3>' +
-          (p.detalhe ? '<p class="passo-detalhe">' + esc(p.detalhe) + '</p>' : '') +
-          (p.preco ? '<p class="passo-preco">' + esc(p.preco).split('R$ ').join('R$ ') + '</p>' : '') +
-          (p.link ? linkExterno(p.link, 'Ver no site da Alperman') : '') +
-        '</div></li>';
-      if (k < trilha.passos.length - 1) item += '<li class="seta" aria-hidden="true">' + SETA_BAIXO + '</li>';
-      return item;
-    }).join('');
+    var abas = '';
+    if (varios) {
+      abas = '<p class="abas-dica">Você marcou ' + trilhas.length + ' temas. Toque em cada um para ver o caminho.</p>' +
+        '<div class="abas" role="tablist" aria-label="Temas marcados">' +
+        trilhas.map(function (t, k) {
+          var ativa = k === estado.aba;
+          return '<button class="aba" type="button" role="tab" id="aba-' + k + '" data-aba="' + k + '" aria-controls="painel-caminho" aria-selected="' + ativa + '" tabindex="' + (ativa ? 0 : -1) + '">' + esc(t.tema) + '</button>';
+        }).join('') + '</div>';
+    }
 
     return '<div class="tela">' +
       '<section class="resultado-topo"><div class="wrap">' +
@@ -539,26 +602,22 @@
           '<div class="pilares">' + cartoes + '</div>' +
         '</section>' +
 
-        '<p class="pesa">O que mais pesa: <strong>' + esc(trilha.tema) + '</strong></p>' +
+        '<p class="pesa">O que mais pesa: <strong>' + esc(temas) + '</strong></p>' +
 
         '<section class="bloco" aria-labelledby="t-ficha"><h2 class="bloco-titulo" id="t-ficha">Sua ficha</h2>' +
           '<dl class="ficha">' +
-            '<div><dt>Tema</dt><dd>' + esc(trilha.tema) + '</dd></div>' +
+            '<div><dt>' + (varios ? 'Temas' : 'Tema') + '</dt><dd>' + esc(temas) + '</dd></div>' +
             '<div><dt>Quando quer resolver</dt><dd>' + esc(quando) + '</dd></div>' +
             '<div><dt>Quem decide</dt><dd>' + esc(quem) + '</dd></div>' +
           '</dl>' +
         '</section>' +
 
         '<section class="bloco" aria-labelledby="t-caminho"><h2 class="bloco-titulo" id="t-caminho">Seu caminho recomendado</h2>' +
-          '<ol class="caminho">' + passos + '</ol>' +
+          abas +
+          '<div id="painel-caminho"' + (varios ? ' role="tabpanel" aria-labelledby="aba-' + estado.aba + '"' : '') + '>' +
+            caminhoHTML(trilhas[estado.aba]) +
+          '</div>' +
         '</section>' +
-
-        '<section class="bloco"><article class="case">' +
-          '<h2 class="case-rotulo">Case parecido com o seu</h2>' +
-          '<p class="case-nome">' + esc(trilha.caso.nome) + '</p>' +
-          '<p class="case-categoria">' + esc(trilha.caso.categoria) + '</p>' +
-          linkExterno(CASES, 'Ler o case') +
-        '</article></section>' +
       '</div>' +
 
       '<section class="faixa-preta faixa-final"><div class="wrap">' +
@@ -585,13 +644,30 @@
         if (history.state && history.state.tela === n && n > 0) history.back();
         else ir(n - 1);
       });
+      if (PERGUNTAS[i].tipo === 'multipla') {
+        var caixas = app.querySelectorAll('[role="checkbox"]');
+        var continuar = document.getElementById('continuar');
+        Array.prototype.forEach.call(caixas, function (c) {
+          c.addEventListener('click', function () {
+            c.setAttribute('aria-checked', String(c.getAttribute('aria-checked') !== 'true'));
+            var lista = [];
+            Array.prototype.forEach.call(caixas, function (o) {
+              if (o.getAttribute('aria-checked') === 'true') lista.push(Number(o.getAttribute('data-valor')));
+            });
+            estado.respostas[i] = lista.length ? lista : null;
+            continuar.disabled = !lista.length;
+          });
+        });
+        continuar.addEventListener('click', function () { if (estado.respostas[i]) ir(n + 1); });
+        return;
+      }
       var botoes = app.querySelectorAll('[role="radio"]');
       Array.prototype.forEach.call(botoes, function (b) {
         b.addEventListener('click', function () {
           if (travado) return;
           var bruto = b.getAttribute('data-valor');
           var p = PERGUNTAS[i];
-          estado.respostas[i] = (p.tipo === 'escala' || i === 0) ? Number(bruto) : bruto;
+          estado.respostas[i] = p.tipo === 'escala' ? Number(bruto) : bruto;
           Array.prototype.forEach.call(botoes, function (o) { o.setAttribute('aria-checked', String(o === b)); });
           travado = true;
           setTimeout(function () { ir(n + 1); }, 220);
@@ -599,6 +675,29 @@
       });
       return;
     }
+    /* Abas dos temas no resultado */
+    var abas = app.querySelectorAll('[role="tab"]');
+    function escolherAba(k, focar) {
+      estado.aba = k;
+      Array.prototype.forEach.call(abas, function (a, j) {
+        a.setAttribute('aria-selected', String(j === k));
+        a.tabIndex = j === k ? 0 : -1;
+      });
+      var painel = document.getElementById('painel-caminho');
+      painel.setAttribute('aria-labelledby', 'aba-' + k);
+      painel.innerHTML = caminhoHTML(trilhasMarcadas()[k]);
+      if (focar) abas[k].focus();
+    }
+    Array.prototype.forEach.call(abas, function (a, k) {
+      a.addEventListener('click', function () { escolherAba(k, false); });
+      a.addEventListener('keydown', function (e) {
+        var alvo = e.key === 'ArrowRight' ? k + 1 : e.key === 'ArrowLeft' ? k - 1 : null;
+        if (alvo === null) return;
+        e.preventDefault();
+        escolherAba((alvo + abas.length) % abas.length, true);
+      });
+    });
+
     var aviso = document.getElementById('aviso');
     document.getElementById('consultor').addEventListener('click', function () {
       if (typeof aviso.showModal === 'function') aviso.showModal();
@@ -606,6 +705,7 @@
     });
     document.getElementById('refazer').addEventListener('click', function () {
       estado.nome = '';
+      estado.aba = 0;
       estado.respostas = novasRespostas();
       ir(0);
     });
