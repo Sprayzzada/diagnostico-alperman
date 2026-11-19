@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Protótipo acadêmico · FAE Business School · Não é um serviço oficial da Alperman · Nenhuma resposta é salva">
+<meta property="og:title" content="Diagnóstico Inteligente Alperman · Protótipo acadêmico">
+<meta property="og:description" content="Protótipo acadêmico da FAE Business School. Não é um serviço oficial da Alperman. Nenhuma resposta é salva.">
+<title>Diagnóstico Inteligente Alperman</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111111'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23D62828'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --preto: #111111;
+    --branco: #FFFFFF;
+    --vermelho: #D62828;
+    --cinza: #F2F2F2;
+    --fonte-titulo: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    --fonte-texto: 'Inter', 'Segoe UI', Arial, sans-serif;
+    --raio: 14px;
+    --rodape: 64px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    background: var(--branco);
+    color: var(--preto);
+    font-family: var(--fonte-texto);
+    font-size: 16px;
+    line-height: 1.5;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom: calc(var(--rodape) + 8px);
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  button, input, a { font: inherit; color: inherit; }
+  button { cursor: pointer; touch-action: manipulation; border: 0; background: none; }
+  a { touch-action: manipulation; }
+  :focus-visible { outline: 3px solid var(--preto); outline-offset: 3px; }
+  [tabindex="-1"]:focus { outline: none; }
+
+  .wrap { width: 100%; max-width: 560px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Topo com logo ---------- */
+  .topo { background: var(--branco); border-bottom: 1px solid var(--cinza); }
+  .topo .wrap { height: 60px; display: flex; align-items: center; }
+  .logo-img { display: block; height: 28px; width: auto; }
+  .marca {
+    font-family: var(--fonte-titulo);
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: 0.2em;
+    line-height: 1;
+  }
+  .marca-branca { color: var(--branco); }
+
+  /* ---------- Telas ---------- */
+  .tela { animation: entra 0.25s ease both; }
+  @keyframes entra { from { opacity: 0; transform: translateY(8px); } }
+  @media (prefers-reduced-motion: reduce) { .tela { animation: none; } .barra span { transition: none !important; } }
+
+  h1, h2, h3 { font-family: var(--fonte-titulo); line-height: 1.2; }
+  .titulo-xl { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; }
+
+  /* ---------- Botões ---------- */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; min-height: 58px; padding: 14px 20px;
+    border-radius: 12px;
+    font-family: var(--fonte-titulo); font-weight: 700; font-size: 17px;
+    text-align: center; text-decoration: none;
+    transition: transform 0.1s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-vermelho { background: var(--vermelho); color: var(--branco); }
+  .btn-secundario { background: var(--branco); color: var(--preto); border: 2px solid var(--preto); }
+
+  /* ---------- Boas-vindas ---------- */
+  .boas-vindas { padding: 36px 0 24px; }
+  .boas-vindas .titulo-xl { font-size: 34px; }
+  .sub { margin-top: 14px; font-size: 17px; }
+  .info {
+    display: flex; flex-wrap: wrap; gap: 6px 14px;
+    margin-top: 20px; font-size: 13px; font-weight: 600;
+  }
+  .info span { display: inline-flex; align-items: center; gap: 6px; }
+  .info span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--preto); }
+  .pilares-mini { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center;
+    border: 1.5px solid var(--preto); border-radius: 999px;
+    padding: 4px 11px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  .campo { display: block; margin-top: 28px; }
+  .campo-rotulo { display: block; font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+  .campo-rotulo em { font-style: normal; font-weight: 400; }
+  .campo input {
+    width: 100%; min-height: 56px; padding: 14px 16px;
+    border: 2px solid var(--preto); border-radius: 12px;
+    background: var(--branco); font-size: 17px;
+  }
+  .campo input:focus { outline: none; box-shadow: 0 0 0 3px var(--cinza), 0 0 0 5px var(--preto); }
+  .boas-vindas .btn { margin-top: 16px; }
+
+  /* ---------- Perguntas ---------- */
+  .pergunta-tela { padding: 16px 0 24px; }
+  .progresso-linha { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .voltar {
+    display: inline-flex; align-items: center; gap: 6px;
+    min-height: 44px; padding: 0 12px 0 4px; margin-left: -4px;
+    font-weight: 600; font-size: 15px; border-radius: 10px;
+  }
+  .voltar svg { width: 18px; height: 18px; }
+  .contador { font-size: 14px; font-weight: 600; }
+  .barra { height: 6px; background: var(--cinza); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+  .barra span { display: block; height: 100%; background: var(--vermelho); border-radius: 99px; transition: width 0.3s ease; }
+  .pergunta-corpo { margin-top: 28px; }
+  .pergunta-corpo .chip { margin-bottom: 14px; }
+  .pergunta { font-size: 24px; font-weight: 700; letter-spacing: -0.005em; }
+  .instrucao { margin-top: 8px; font-size: 15px; }
+
+  .opcoes { display: flex; flex-direction: column; gap: 8px; margin-top: 22px; }
+  .opcao {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; min-height: 54px; padding: 12px 16px;
+    background: var(--cinza); border: 2px solid transparent; border-radius: 12px;
+    text-align: left; font-weight: 600; font-size: 16px; line-height: 1.3;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .opcao::after {
+    content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid currentColor; box-sizing: border-box;
+  }
+  .opcao[aria-checked="true"] { background: var(--preto); color: var(--branco); }
+  .opcao[aria-checked="true"]::after { background: var(--branco); box-shadow: inset 0 0 0 4px var(--preto); }
+  @media (hover: hover) { .opcao:hover { border-color: var(--preto); } .nota:hover { border-color: var(--preto); } }
+
+  .escala { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 26px; }
+  .nota {
+    height: 68px; border-radius: 12px; background: var(--cinza); border: 2px solid transparent;
+    font-family: var(--fonte-titulo); font-weight: 800; font-size: 24px;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .nota[aria-checked="true"] { background: var(--preto); color: var(--branco); }
+  .escala-legenda { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 13px; font-weight: 600; }
+  .escala-legenda span:last-child { text-align: right; }
+
+  /* ---------- Resultado ---------- */
+  .resultado-topo { padding: 28px 0 20px; }
+  .resultado-topo .titulo-xl { font-size: 28px; }
+  .faixa-preta { background: var(--preto); color: var(--branco); }
+  .faixa-aviso { padding: 14px 0; font-size: 14px; line-height: 1.45; }
+  .faixa-aviso strong { font-weight: 700; }
+  .bloco { margin-top: 32px; }
+  .bloco-titulo { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
+
+  .pilares { display: grid; gap: 10px; }
+  .pilar { background: var(--cinza); border: 2px solid transparent; border-radius: var(--raio); padding: 14px 16px 16px; }
+  .pilar.atencao { border-color: var(--vermelho); }
+  .pilar-topo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pilar-nome { font-family: var(--fonte-titulo); font-weight: 700; font-size: 16px; }
+  .pilar-nome b { font-weight: 800; }
+  .tag-atencao {
+    margin-left: auto; background: var(--vermelho); color: var(--branco);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 4px 9px; border-radius: 99px; white-space: nowrap;
+  }
+  .pilar-nivel { margin-top: 6px; font-size: 15px; }
+  .pilar-nivel b { font-family: var(--fonte-titulo); font-size: 22px; font-weight: 800; }
+  .segmentos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 8px; }
+  .segmentos i { display: block; height: 10px; border-radius: 3px; background: var(--branco); border: 1.5px solid var(--preto); }
+  .segmentos i.on { background: var(--preto); }
+  @media (min-width: 620px) {
+    .pilares { grid-template-columns: repeat(3, 1fr); }
+    .pilar-topo { flex-direction: column; align-items: flex-start; }
+    .tag-atencao { margin-left: 0; }
+  }
+
+  .pesa { margin-top: 24px; padding: 14px 0; border-top: 2px solid var(--preto); border-bottom: 2px solid var(--preto); font-size: 16px; }
+  .pesa strong { font-family: var(--fonte-titulo); font-weight: 800; }
+
+  .ficha { background: var(--cinza); border-radius: var(--raio); padding: 4px 16px; }
+  .ficha div { padding: 12px 0; }
+  .ficha div + div { border-top: 2px solid var(--branco); }
+  .ficha dt { font-size: 13px; }
+  .ficha dd { margin-top: 2px; font-family: var(--fonte-titulo); font-weight: 700; font-size: 17px; line-height: 1.3; }
+
+  .caminho { list-style: none; }
+  .passo { display: flex; gap: 14px; background: var(--cinza); border: 2px solid transparent; border-radius: var(--raio); padding: 16px; }
+  .passo.primeiro { border-color: var(--vermelho); }
+  .passo-num {
+    flex: none; width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--preto); color: var(--branco);
+    font-family: var(--fonte-titulo); font-weight: 800; font-size: 17px;
+  }
+  .passo.primeiro .passo-num { background: var(--vermelho); }
+  .passo-corpo { min-width: 0; }
+  .passo-rotulo { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .passo-nome { margin-top: 2px; font-size: 18px; font-weight: 700; line-height: 1.3; }
+  .passo-detalhe { margin-top: 2px; font-size: 14px; }
+  .passo-preco { margin-top: 6px; font-weight: 700; font-size: 16px; }
+  .link-externo {
+    display: inline-flex; align-items: center; gap: 6px;
+    min-height: 44px; margin-top: 4px; margin-bottom: -8px;
+    font-weight: 600; font-size: 15px;
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px;
+  }
+  .link-externo svg { width: 15px; height: 15px; flex: none; }
+  .seta { display: flex; justify-content: center; padding: 4px 0; }
+  .seta svg { width: 22px; height: 22px; }
+
+  .case { background: var(--cinza); border-radius: var(--raio); padding: 18px 16px 16px; }
+  .case-rotulo { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .case-nome { margin-top: 6px; font-size: 20px; font-weight: 800; }
+  .case-categoria { margin-top: 2px; font-size: 15px; }
+
+  .faixa-final { margin-top: 40px; padding: 36px 0 32px; }
+  .faixa-final .marca, .faixa-final .logo-img { display: block; margin-bottom: 22px; }
+  .faixa-final h2 { font-size: 26px; font-weight: 800; margin-bottom: 18px; }
+  .faixa-final .btn-vermelho:focus-visible { outline-color: var(--branco); }
+  .refazer { padding: 20px 0 8px; }
+
+  /* ---------- Aviso (modal) ---------- */
+  dialog {
+    border: 0; border-radius: 16px; padding: 24px 20px 20px;
+    width: calc(100vw - 32px); max-width: 420px;
+    margin: auto; color: var(--preto); background: var(--branco);
+  }
+  dialog::backdrop { background: rgba(17, 17, 17, 0.65); }
+  dialog h2 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+  dialog p { font-size: 16px; }
+  dialog .btn { margin-top: 20px; }
+
+  /* ---------- Rodapé fixo ---------- */
+  .rodape {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: var(--preto); color: var(--branco);
+    padding: 9px 16px calc(9px + env(safe-area-inset-bottom));
+    font-size: 11.5px; line-height: 1.4; text-align: center; font-weight: 500;
+  }
+  .rodape p { max-width: 560px; margin: 0 auto; }
+
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+  <header class="topo">
+    <div class="wrap" id="logo-topo"></div>
+  </header>
+
+  <main id="app">
+    <noscript><div class="wrap" style="padding:32px 16px">Para fazer o diagnóstico, ative o JavaScript do navegador.</div></noscript>
+  </main>
+
+  <dialog id="aviso" aria-labelledby="aviso-titulo">
+    <h2 id="aviso-titulo">Falar com um consultor</h2>
+    <p>No piloto, aqui você agenda uma conversa com um consultor que já conhece o seu diagnóstico. Nesta demonstração, nenhum dado é enviado.</p>
+    <button class="btn btn-vermelho" id="fechar-aviso" type="button">Entendi</button>
+  </dialog>
+
+  <footer class="rodape" id="rodape">
+    <p>Protótipo acadêmico · FAE Business School · Não é um serviço oficial da Alperman · Nenhuma resposta é salva</p>
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Logo: quando os arquivos do logo estiverem nesta pasta, preencha os nomes abaixo.
+     Enquanto estiver null, aparece o nome ALPERMAN em texto. */
+  var LOGO = { preto: null, branco: null };
+
+  /* ===== Conteúdo (somente os itens do briefing) ===== */
+  var EDUCACAO = 'https://www.alperman.com/educa%C3%A7%C3%A3o';
+  var CONSULTORIA = 'https://www.alperman.com/consultoria';
+  var TECNOLOGIA = 'https://www.alperman.com/tecnologia';
+  var CASES = 'https://www.alperman.com/cases';
+
+  var TRILHAS = [
+    { tema: 'Estratégia e direção',
+      passos: [
+        { tipo: 'Ferramenta', nome: 'Posicionamento Estratégico', preco: 'R$ 15,00', link: 'https://www.alperman.com/ferramentas/posicionamento-estrat%C3%A9gico' },
+        { tipo: 'Treinamento', nome: 'Gestão de OKRs', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Direcionamento Estratégico', link: CONSULTORIA }
+      ],
+      caso: { nome: 'Unimed Paraná', categoria: 'Direcionamento Estratégico' } },
+    { tema: 'OKRs e metas da empresa',
+      passos: [
+        { tipo: 'Ferramenta', nome: 'Construção de OKR', preco: 'R$ 15,50', link: 'https://www.alperman.com/ferramentas/constru%C3%A7%C3%A3o-de-okr' },
+        { tipo: 'Treinamento', nome: 'Gestão de OKRs', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Estruturação de OKRs', link: CONSULTORIA }
+      ],
+      caso: { nome: 'Growinco', categoria: 'Estruturação de OKR' } },
+    { tema: 'Metas e avaliação das pessoas',
+      passos: [
+        { tipo: 'Ferramenta', nome: 'Indicadores de Desempenho', preco: 'R$ 15,00', link: 'https://www.alperman.com/ferramentas/indicadores-de-desempenho' },
+        { tipo: 'Programa In Company', nome: 'RH que Performa Mais', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Estratégia de Metas e Bônus', link: CONSULTORIA }
+      ],
+      caso: { nome: 'Safrasul', categoria: 'Programas de Metas e Avaliações de Desempenho' } },
+    { tema: 'Remuneração e bônus',
+      passos: [
+        { tipo: 'Evento', nome: 'Encontros RHs que Performam Mais', preco: 'Gratuito' },
+        { tipo: 'Programa In Company', nome: 'RH que Performa Mais', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Estratégia de Remuneração', link: CONSULTORIA }
+      ],
+      caso: { nome: 'Cemitério Vertical', categoria: 'Estratégia de Remuneração' } },
+    { tema: 'Cultura e clima',
+      passos: [
+        { tipo: 'Ferramenta', nome: 'Revisão da Cultura organizacional', preco: 'R$ 19,90', link: 'https://www.alperman.com/ferramentas/revis%C3%A3o-da-cultura-organizacional' },
+        { tipo: 'Capacitação', nome: 'Comunicação assertiva', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Cultura e Clima Organizacional', link: CONSULTORIA }
+      ],
+      caso: { nome: 'Veteduka', categoria: 'Treinamento de OKR e Cultura Organizacional' } },
+    { tema: 'Dados e indicadores de gestão',
+      passos: [
+        { tipo: 'Ferramenta', nome: 'Métrica Direcionadoras', preco: 'R$ 18,50', link: 'https://www.alperman.com/ferramentas/m%C3%A9trica-direcionadoras' },
+        { tipo: 'Treinamento', nome: 'Business Analytics: Além das Métricas', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Design de Informações Gerenciais + painel em Power BI', link: TECNOLOGIA }
+      ],
+      caso: { nome: 'JValério', categoria: 'Design de Informações Gerenciais Financeiras' } },
+    { tema: 'Desenvolvimento de líderes',
+      passos: [
+        { tipo: 'E-book', nome: 'Jornada do Líder', preco: 'Gratuito', link: 'https://www.alperman.com/jornadadolider' },
+        { tipo: 'Capacitação', nome: 'Liderança de Alta Performance', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Programas de Desenvolvimento', link: CONSULTORIA }
+      ],
+      caso: { nome: 'W3 Wolbert', categoria: 'Performance de Pessoas e Corporativa' } },
+    { tema: 'Processos',
+      passos: [
+        { tipo: 'Treinamento', nome: 'Gestão de processos (BPM)', link: EDUCACAO },
+        { tipo: 'Consultoria', nome: 'Design de Processos Estratégico', link: CONSULTORIA },
+        { tipo: 'Tecnologia', nome: 'Power Automate', detalhe: 'Automação de processos', link: TECNOLOGIA }
+      ],
+      caso: { nome: 'Tecpar', categoria: 'Desenho Modelo de Gestão de Processos' } }
+  ];
+
+  var PILARES = [
+    { sigla: 'AL', nome: 'Alinhamento', perguntas: [1, 2] },
+    { sigla: 'PER', nome: 'Desempenho', perguntas: [3, 4] },
+    { sigla: 'MAN', nome: 'Gestão', perguntas: [5, 6] }
+  ];
+
+  var PERGUNTAS = [
+    { tipo: 'escolha', titulo: 'Qual tema mais pesa hoje na sua empresa?', opcoes: TRILHAS.map(function (t) { return t.tema; }) },
+    { tipo: 'escala', pilar: 0, titulo: 'Os objetivos da empresa estão claros para todos os times.' },
+    { tipo: 'escala', pilar: 0, titulo: 'As áreas trabalham com as mesmas prioridades.' },
+    { tipo: 'escala', pilar: 1, titulo: 'As metas da equipe são acompanhadas com indicadores.' },
+    { tipo: 'escala', pilar: 1, titulo: 'Existe avaliação de desempenho com critérios claros.' },
+    { tipo: 'escala', pilar: 2, titulo: 'Os líderes têm uma rotina de acompanhamento com o time.' },
+    { tipo: 'escala', pilar: 2, titulo: 'As decisões seguem critérios definidos.' },
+    { tipo: 'escolha', titulo: 'Quando você quer resolver isso?', opcoes: ['Ainda este trimestre', 'No próximo trimestre', 'Só estou pesquisando'] },
+    { tipo: 'escolha', titulo: 'Quem decide sobre esse tema?', opcoes: ['Eu decido', 'Decido junto com outras pessoas', 'Outra pessoa decide'] }
+  ];
+  var TOTAL = PERGUNTAS.length;      /* 9 */
+  var TELA_RESULTADO = TOTAL + 1;    /* 10 */
+
+  /* ===== Estado: só na memória da página (nada é gravado) ===== */
+  var estado = { nome: '', respostas: novasRespostas(), tela: 0 };
+  var travado = false;
+
+  function novasRespostas() { var r = []; for (var i = 0; i < TOTAL; i++) r.push(null); return r; }
+
+  var app = document.getElementById('app');
+
+  /* ===== Utilidades ===== */
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function logo(cor) {
+    var src = LOGO[cor];
+    if (src) return '<img class="logo-img" src="' + esc(src) + '" alt="Alperman">';
+    return '<span class="marca' + (cor === 'branco' ? ' marca-branca' : '') + '" role="img" aria-label="Alperman">ALPERMAN</span>';
+  }
+  var ICONE_EXTERNO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h4v4"/><path d="M13 3 7 9"/><path d="M11 9.5V13H3V5h3.5"/></svg>';
+  var ICONE_VOLTAR = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg>';
+  var SETA_BAIXO = '<svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v15"/><path d="m6 13 6 6 6-6"/></svg>';
+
+  function linkExterno(href, texto) {
+    return '<a class="link-externo" href="' + href + '" target="_blank" rel="noopener noreferrer">' +
+      esc(texto) + ICONE_EXTERNO + '<span class="sr"> (abre em nova aba)</span></a>';
+  }
+
+  function nomeFormatado() {
+    var n = estado.nome.trim().replace(/\s+/g, ' ');
+    if (!n) return '';
+    return n.charAt(0).toLocaleUpperCase('pt-BR') + n.slice(1);
+  }
+
+  /* Até qual tela dá para ir: a primeira pergunta sem resposta, ou o resultado. */
+  function limiteTela() {
+    for (var i = 0; i < TOTAL; i++) if (estado.respostas[i] === null) return i + 1;
+    return TELA_RESULTADO;
+  }
+
+  /* ===== Navegação (o botão voltar do celular também funciona) ===== */
+  function ir(n) {
+    n = Math.min(n, limiteTela());
+    history.pushState({ tela: n }, '');
+    mostrar(n);
+  }
+  window.addEventListener('popstate', function (e) {
+    var n = e.state && typeof e.state.tela === 'number' ? e.state.tela : 0;
+    if (n > 0 && estado.respostas.every(function (r) { return r === null; })) n = 0;
+    mostrar(Math.min(n, limiteTela()));
+  });
+
+  function mostrar(n) {
+    travado = false;
+    estado.tela = n;
+    if (n === 0) app.innerHTML = telaBoasVindas();
+    else if (n <= TOTAL) app.innerHTML = telaPergunta(n - 1);
+    else app.innerHTML = telaResultado();
+    ligarEventos(n);
+    window.scrollTo(0, 0);
+    if (n > 0) {
+      var foco = app.querySelector('[data-foco]');
+      if (foco) foco.focus({ preventScroll: true });
+    }
+  }
+
+  /* ===== Tela 1: boas-vindas ===== */
+  function telaBoasVindas() {
+    return '<section class="tela boas-vindas"><div class="wrap">' +
+      '<h1 class="titulo-xl" data-foco tabindex="-1">Seu diagnóstico em 2&nbsp;minutos</h1>' +
+      '<p class="sub">Descubra em que nível sua empresa está nos pilares da Alperman e qual o melhor próximo passo.</p>' +
+      '<div class="pilares-mini" aria-label="Pilares avaliados">' +
+        PILARES.map(function (p) { return '<span class="chip">' + p.sigla + ' · ' + p.nome + '</span>'; }).join('') +
+      '</div>' +
+      '<label class="campo" for="nome">' +
+        '<span class="campo-rotulo">Seu primeiro nome <em>(opcional)</em></span>' +
+        '<input id="nome" type="text" name="primeiro-nome-temp" maxlength="30" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go" value="' + esc(estado.nome) + '">' +
+      '</label>' +
+      '<button class="btn btn-vermelho" id="comecar" type="button">Começar diagnóstico</button>' +
+      '<p class="info"><span>9 perguntas</span><span>Menos de 2 minutos</span><span>Nenhuma resposta é salva</span></p>' +
+    '</div></section>';
+  }
+
+  /* ===== Telas 2 a 10: perguntas ===== */
+  function telaPergunta(i) {
+    var p = PERGUNTAS[i];
+    var num = i + 1;
+    var resp = estado.respostas[i];
+    var html = '<section class="tela pergunta-tela"><div class="wrap">' +
+      '<div class="progresso-linha">' +
+        '<button class="voltar" id="voltar" type="button">' + ICONE_VOLTAR + 'Voltar</button>' +
+        '<span class="contador">Pergunta ' + num + ' de ' + TOTAL + '</span>' +
+      '</div>' +
+      '<div class="barra" role="progressbar" aria-label="Progresso" aria-valuemin="0" aria-valuemax="' + TOTAL + '" aria-valuenow="' + num + '"><span style="width:' + (num / TOTAL * 100) + '%"></span></div>' +
+      '<div class="pergunta-corpo">';
+
+    if (p.tipo === 'escala') {
+      var pilar = PILARES[p.pilar];
+      html += '<span class="chip">Pilar ' + pilar.sigla + ' · ' + pilar.nome + '</span>' +
+        '<h1 class="pergunta" id="q-titulo" data-foco tabindex="-1">' + esc(p.titulo) + '</h1>' +
+        '<p class="instrucao">Quanto isso acontece hoje na sua empresa?</p>' +
+        '<div class="escala" role="radiogroup" aria-labelledby="q-titulo">';
+      for (var v = 1; v <= 5; v++) {
+        var rotulo = v + (v === 1 ? ', não acontece' : v === 5 ? ', acontece sempre' : '');
+        html += '<button class="nota" type="button" role="radio" data-valor="' + v + '" aria-checked="' + (resp === v) + '" aria-label="' + rotulo + '">' + v + '</button>';
+      }
+      html += '</div><div class="escala-legenda" aria-hidden="true"><span>1 = não acontece</span><span>5 = acontece sempre</span></div>';
+    } else {
+      html += '<h1 class="pergunta" id="q-titulo" data-foco tabindex="-1">' + esc(p.titulo) + '</h1>' +
+        '<div class="opcoes" role="radiogroup" aria-labelledby="q-titulo">';
+      p.opcoes.forEach(function (op, k) {
+        var valor = i === 0 ? k : op;
+        html += '<button class="opcao" type="button" role="radio" data-valor="' + esc(String(valor)) + '" aria-checked="' + (resp === valor) + '">' + esc(op) + '</button>';
+      });
+      html += '</div>';
+    }
+    html += '</div></div></section>';
+    return html;
+  }
+
+  /* ===== Tela 11: resultado ===== */
+  function calcularPilares() {
+    var lista = PILARES.map(function (p) {
+      var a = estado.respostas[p.perguntas[0]];
+      var b = estado.respostas[p.perguntas[1]];
+      var media = (a + b) / 2;
+      return { sigla: p.sigla, nome: p.nome, media: media, nivel: Math.floor(media + 0.5) }; /* 0,5 arredonda pra cima */
+    });
+    var atencao = 0; /* empate: vale a ordem AL, PER, MAN */
+    for (var i = 1; i < lista.length; i++) if (lista[i].media < lista[atencao].media) atencao = i;
+    lista[atencao].atencao = true;
+    return lista;
+  }
+
+  function telaResultado() {
+    var trilha = TRILHAS[estado.respostas[0]];
+    var quando = estado.respostas[7];
+    var quem = estado.respostas[8];
+    var nome = nomeFormatado();
+    var titulo = nome ? esc(nome) + ', seu diagnóstico está pronto.' : 'Seu diagnóstico está pronto.';
+
+    var cartoes = calcularPilares().map(function (p) {
+      var seg = '';
+      for (var s = 1; s <= 5; s++) seg += '<i' + (s <= p.nivel ? ' class="on"' : '') + '></i>';
+      return '<article class="pilar' + (p.atencao ? ' atencao' : '') + '">' +
+        '<div class="pilar-topo"><h3 class="pilar-nome"><b>' + p.sigla + '</b> · ' + p.nome + '</h3>' +
+          (p.atencao ? '<span class="tag-atencao">Ponto de atenção</span>' : '') + '</div>' +
+        '<p class="pilar-nivel">Nível <b>' + p.nivel + '</b> de 5</p>' +
+        '<div class="segmentos" aria-hidden="true">' + seg + '</div>' +
+      '</article>';
+    }).join('');
+
+    var passos = trilha.passos.map(function (p, k) {
+      var item = '<li class="passo' + (k === 0 ? ' primeiro' : '') + '">' +
+        '<span class="passo-num" aria-hidden="true">' + (k + 1) + '</span>' +
+        '<div class="passo-corpo">' +
+          '<p class="passo-rotulo"><span class="sr">Passo ' + (k + 1) + ': </span>' + esc(p.tipo) + '</p>' +
+          '<h3 class="passo-nome">' + esc(p.nome) + '</h3>' +
+          (p.detalhe ? '<p class="passo-detalhe">' + esc(p.detalhe) + '</p>' : '') +
+          (p.preco ? '<p class="passo-preco">' + esc(p.preco).split('R$ ').join('R$ ') + '</p>' : '') +
+          (p.link ? linkExterno(p.link, 'Ver no site da Alperman') : '') +
+        '</div></li>';
+      if (k < trilha.passos.length - 1) item += '<li class="seta" aria-hidden="true">' + SETA_BAIXO + '</li>';
+      return item;
+    }).join('');
+
+    return '<div class="tela">' +
+      '<section class="resultado-topo"><div class="wrap">' +
+        '<h1 class="titulo-xl" data-foco tabindex="-1">' + titulo + '</h1>' +
+      '</div></section>' +
+      '<div class="faixa-preta faixa-aviso"><div class="wrap"><p><strong>Prévia automática.</strong> No piloto, este resultado só chega até você depois da revisão de um consultor Alperman.</p></div></div>' +
+
+      '<div class="wrap">' +
+        '<section class="bloco" aria-labelledby="t-onde"><h2 class="bloco-titulo" id="t-onde">Onde sua empresa está hoje</h2>' +
+          '<div class="pilares">' + cartoes + '</div>' +
+        '</section>' +
+
+        '<p class="pesa">O que mais pesa: <strong>' + esc(trilha.tema) + '</strong></p>' +
+
+        '<section class="bloco" aria-labelledby="t-ficha"><h2 class="bloco-titulo" id="t-ficha">Sua ficha</h2>' +
+          '<dl class="ficha">' +
+            '<div><dt>Tema</dt><dd>' + esc(trilha.tema) + '</dd></div>' +
+            '<div><dt>Quando quer resolver</dt><dd>' + esc(quando) + '</dd></div>' +
+            '<div><dt>Quem decide</dt><dd>' + esc(quem) + '</dd></div>' +
+          '</dl>' +
+        '</section>' +
+
+        '<section class="bloco" aria-labelledby="t-caminho"><h2 class="bloco-titulo" id="t-caminho">Seu caminho recomendado</h2>' +
+          '<ol class="caminho">' + passos + '</ol>' +
+        '</section>' +
+
+        '<section class="bloco"><article class="case">' +
+          '<h2 class="case-rotulo">Case parecido com o seu</h2>' +
+          '<p class="case-nome">' + esc(trilha.caso.nome) + '</p>' +
+          '<p class="case-categoria">' + esc(trilha.caso.categoria) + '</p>' +
+          linkExterno(CASES, 'Ler o case') +
+        '</article></section>' +
+      '</div>' +
+
+      '<section class="faixa-preta faixa-final"><div class="wrap">' +
+        logo('branco') +
+        '<h2>Quer dar o próximo passo?</h2>' +
+        '<button class="btn btn-vermelho" id="consultor" type="button">Falar com um consultor</button>' +
+      '</div></section>' +
+      '<div class="wrap refazer"><button class="btn btn-secundario" id="refazer" type="button">Refazer diagnóstico</button></div>' +
+    '</div>';
+  }
+
+  /* ===== Eventos ===== */
+  function ligarEventos(n) {
+    if (n === 0) {
+      var campo = document.getElementById('nome');
+      campo.addEventListener('input', function () { estado.nome = campo.value; });
+      campo.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); campo.blur(); ir(1); } });
+      document.getElementById('comecar').addEventListener('click', function () { estado.nome = campo.value; ir(1); });
+      return;
+    }
+    if (n <= TOTAL) {
+      var i = n - 1;
+      document.getElementById('voltar').addEventListener('click', function () {
+        if (history.state && history.state.tela === n && n > 0) history.back();
+        else ir(n - 1);
+      });
+      var botoes = app.querySelectorAll('[role="radio"]');
+      Array.prototype.forEach.call(botoes, function (b) {
+        b.addEventListener('click', function () {
+          if (travado) return;
+          var bruto = b.getAttribute('data-valor');
+          var p = PERGUNTAS[i];
+          estado.respostas[i] = (p.tipo === 'escala' || i === 0) ? Number(bruto) : bruto;
+          Array.prototype.forEach.call(botoes, function (o) { o.setAttribute('aria-checked', String(o === b)); });
+          travado = true;
+          setTimeout(function () { ir(n + 1); }, 220);
+        });
+      });
+      return;
+    }
+    var aviso = document.getElementById('aviso');
+    document.getElementById('consultor').addEventListener('click', function () {
+      if (typeof aviso.showModal === 'function') aviso.showModal();
+      else window.alert(aviso.querySelector('p').textContent);
+    });
+    document.getElementById('refazer').addEventListener('click', function () {
+      estado.nome = '';
+      estado.respostas = novasRespostas();
+      ir(0);
+    });
+  }
+
+  document.getElementById('fechar-aviso').addEventListener('click', function () { document.getElementById('aviso').close(); });
+  document.getElementById('aviso').addEventListener('click', function (e) { if (e.target === this) this.close(); });
+
+  /* Espaço para o rodapé fixo não cobrir o conteúdo */
+  var rodape = document.getElementById('rodape');
+  function ajustarRodape() { document.documentElement.style.setProperty('--rodape', rodape.offsetHeight + 'px'); }
+  window.addEventListener('resize', ajustarRodape);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustarRodape);
+
+  document.getElementById('logo-topo').innerHTML = logo('preto');
+  history.replaceState({ tela: 0 }, '');
+  mostrar(0);
+  ajustarRodape();
+})();
+</script>
+</body>
+</html>
